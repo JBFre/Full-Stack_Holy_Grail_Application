@@ -3,13 +3,16 @@ const { createClient } = require('redis');
 const app = express();
 const client = createClient();
 
+//TODO: create a redis client
 client.on('error', (err) => console.log('Redis Client Error', err));
 client.connect();
 
+// serve static files from public directory
 app.use(express.static("public"));
 
 async function fetchData() {
   try {
+    // TODO: initialize values for: header, left, right, article and footer using the redis client
     const values = await client.mGet(["header", "left", "article", "right", "footer"]);
     return {
       header: Number(values[0]),
@@ -34,6 +37,7 @@ app.get("/data", async function (req, res) {
   }
 });
 
+// get key data
 app.get("/update/:key/:value", async function (req, res) {
   const key = req.params.key;
   const value = Number(req.params.value);
